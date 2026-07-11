@@ -71,18 +71,16 @@ json runBFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
 int main() {
     httplib::Server svr;
 
-    // CORS Middleware
-    svr.set_post_routing_handler([](const httplib::Request&, httplib::Response res) {
+    svr.Options("/api/bfs", [](const httplib::Request&, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
-        });
-
-    svr.Options(".*", [](const httplib::Request&, httplib::Response& res) {
         res.status = 200;
         });
 
     svr.Post("/api/bfs", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+
         try {
             json requestJson = json::parse(req.body);
 
