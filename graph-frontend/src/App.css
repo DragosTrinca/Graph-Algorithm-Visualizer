@@ -1,0 +1,106 @@
+.app-container {
+  display: flex;
+  margin-top: 20px;
+  font-family: sans-serif;
+  padding: 0 20px;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 300px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+}
+
+.edge-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.edges-list {
+  padding-left: 20px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.separator {
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid #ddd;
+}
+
+.bfs-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.status-text {
+  font-weight: bold;
+  text-align: center;
+  color: #555;
+  margin-top: 15px;
+}
+
+.btn {
+  padding: 8px 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.btn-add {
+  background-color: #3498db;
+  color: #fff;
+}
+.btn-add:hover { background-color: #2980b9; }
+
+.btn-submit {
+  background-color: #2ecc71;
+  color: #fff;
+  font-weight: bold;
+}
+.btn-submit:hover { background-color: #27ae60; }
+
+.btn-step {
+  background-color: #e0e0e0;
+  color: #333;
+}
+.btn-step:hover { background-color: #d0d0d0; }
+
+.canvas-container {
+  display: flex;
+}
+
+.graph-canvas {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
