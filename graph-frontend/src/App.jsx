@@ -16,6 +16,7 @@ function App() {
     const edgesRef = useRef([]);
     const stepsRef = useRef([]);
     const stepIndexRef = useRef(-1);
+    const draggedNodeRef = useRef(null);
 
     const [graphText, setGraphText] = useState("0 1\n1 2\n0 2\n1 3\n1 4\n2 4");
 
@@ -185,6 +186,47 @@ function App() {
             stepIndexRef.current -= 1;
     }
 
+    const getMousePos = (e) => {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    };
+
+    const handleMouseDown = (e) => {
+        const pos = getMousePos(e);
+
+        for (let i = nodesRef.current.length - 1; i >= 0; i--) {
+            const node = nodesRef.current[i];
+            const dx = pos.x - node.x;
+            const dy = pos.y - node.y;
+
+            // radius = 20 => radius^2 = 400
+            if (dx * dx + dy * dy <= 400) {
+                node.isDragged = true;
+                draggedNodeRef.current = node;
+                break;
+            }
+        }
+    };
+
+    const handleMouseMove = (e) => {
+        if (draggedNodeRef.current) {
+            const pos = getMousePos(e);
+            draggedNodeRef.current.x = pos.x;
+            draggedNodeRef.current.y = pos.y;
+        }
+    };
+
+    const handleMouseUp = (e) => {
+        if (draggedNodeRef.current) {
+            draggedNodeRef.current.isDragged = false;
+            draggedNodeRef.current = null;
+        }
+    };
+
     return (
         <div className="app-container">
             <div className = "sidebar">
@@ -230,7 +272,14 @@ function App() {
 
 
             <div className="canvas-container">
-                <canvas ref={canvasRef} className="graph-canvas"/>
+                <canvas
+                    ref={canvasRef}
+                    className="graph-canvas"
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseUp}
+                />
             </div>
         </div>
         
