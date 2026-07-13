@@ -81,6 +81,13 @@ export class PhysicsEngine {
 
         // Update coordinates
         this.nodes.forEach(node => {
+            // Dragged nodes ignore other forces
+            if (node.isDragged) {
+                node.vx = 0;
+                node.vy = 0;
+                return;
+            }
+
             node.vx = (node.vx + node.fx) * this.damping;
             node.vy = (node.vy + node.fy) * this.damping;
 
