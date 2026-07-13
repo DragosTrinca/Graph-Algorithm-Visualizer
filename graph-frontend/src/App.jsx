@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Renderer } from './Renderer';
 import { PhysicsEngine} from './PhysicsEngine';
+import './App.css';
 
 function App() {
     const canvasRef = useRef(null);
