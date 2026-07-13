@@ -17,36 +17,53 @@ function App() {
     const stepsRef = useRef([]);
     const stepIndexRef = useRef(-1);
 
-    const handleAddEdge = (e) => {
-        e.preventDefault();
+    const [graphText, setGraphText] = useState("0 1\n1 2\n0 2\n1 3\n1 4\n2 4");
 
-        if (inputSource === "" || inputTarget === "") return;
+    // Transform text into graph
+    const handleApplyGraph = () => {
+        const lines = graphText.split('\n');
+        const newEdges = [];
+        const newNodesSet = new Set();
 
-        const addNodeIfMissing = (nodeId) => {
-            const exists = nodesRef.current.find(n => n.id === nodeId);
-            if (!exists) {
-                nodesRef.current.push({
-                    id: nodeId,
-                    x: Math.random() * 800,
-                    y: Math.random() * 600,
-                    vx: 0,
-                    vy: 0
-                });
+        // Parse text line by line
+        lines.forEach(line => {
+            const parts = line.trim().split(/[\s,-]+/);
+            if (parts.length >= 2 && parts[0] !== "" && parts[1] !=="") {
+                const source = parts[0];
+                const target = parts[1];
+                newEdges.push({ source, target });
+                newNodesSet.add(source);
+                newNodesSet.add(target);
             }
-        };
+        });
 
-        addNodeIfMissing(inputSource);
-        addNodeIfMissing(inputTarget);
+        // Build new nodes, keep old nodes on the same position
+        const currentNodes = nodesRef.current;
+        const updatedNodes = [];
 
-        const newEdge = {
-            source: inputSource,
-            target: inputTarget
-        };
-        edgesRef.current.push(newEdge);
+        newNodesSet.forEach(nodeId => {
+            const existingNode = currentNodes.find(n => n.id === nodeId);
+            if (existingNode) updatedNodes.push(existingNode);
+            else updatedNodes.push({
+                id: nodeId,
+                x: Math.random() * 800,
+                y: Math.random() * 600,
+                vx: 0,
+                vy: 0
+            });
+        });
 
-        setUiEdges([...edgesRef.current]);
-        setInputSource("");
-        setInputTarget("");
+        // Update arrays
+        nodesRef.current.length = 0;
+        updatedNodes.forEach(n => nodesRef.current.push(n));
+
+        edgesRef.current.length = 0;
+        newEdges.forEach(e => edgesRef.current.push(e));
+
+        // Reset steps
+        stepsRef.current = [];
+        stepIndexRef.current = -1;
+        setStatus("Graph updated");
     };
 
     const fetchBFS = async () => {
@@ -100,6 +117,9 @@ function App() {
     };
 
     useEffect(() => {
+        // Display initial graph
+        handleApplyGraph();
+
         const canvas = canvasRef.current;
 
         canvas.width = 800;
@@ -170,37 +190,18 @@ function App() {
             <div className = "sidebar">
                 <h3>Graph Editor</h3>
 
-                <form onSubmit={handleAddEdge} className="edge-form">
-                    <div className="input-group">
-                        <label>Source Node:</label>
-                        <input
-                            type="text"
-                            className="input-field"
-                            value={inputSource}
-                            onChange={e => setInputSource(e.target.value)}
-                            placeholder="Ex. 0"
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Destination Node:</label>
-                        <input
-                            type="text"
-                            className="input-field"
-                            value={inputTarget}
-                            onChange={e => setInputTarget(e.target.value)}
-                            placeholder="Ex. 1"
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-add">Add Edge</button>
-                </form>
-
-                <h4>Current Edges:</h4>
-                <ul className="edges-list">
-                    {uiEdges.length === 0 ? <li>No edge</li> : uiEdges.map((e, i) => (
-                        <li key={i}>{e.source} - {e.target}</li>
-                    ))}
-                </ul>
+                <div className="input-group">
+                    <label>Edges (one per row):</label>
+                    <textarea
+                        className="input-field textarea-field"
+                        value={graphText}
+                        onChange={e => setGraphText(e.target.value)}
+                        spellCheck="false"
+                    />
+                </div>
+                <button onClick={handleApplyGraph} className="btn btn-update" style={{marginTop: '10px'}}>
+                    Display Graph
+                </button>
 
                 <hr className="separator"/>
 
