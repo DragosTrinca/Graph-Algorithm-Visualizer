@@ -104,3 +104,18 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
+.textarea-field {
+  resize: vertical;
+  min-height: 150px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  white-space: pre;
+}
+
+.btn-update {
+  background-color: #8e44ad;
+  color: white;
+  margin-bottom: 20px;
+}
+.btn-update:hover { background-color: #9b59b6; }
