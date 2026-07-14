@@ -90,8 +90,8 @@ function App() {
             if (!adjList[edge.source].includes(parseInt(edge.target))) {
                 adjList[edge.source].push(parseInt(edge.target));
             }
-            if (!adjList[edge.target].includes(parseInt(edge.target))) {
-                adjList[edge.source].push(parseInt(edge.target));
+            if (!adjList[edge.target].includes(parseInt(edge.source))) {
+                adjList[edge.target].push(parseInt(edge.source));
             }
         });
 
