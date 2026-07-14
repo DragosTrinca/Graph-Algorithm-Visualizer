@@ -11,6 +11,9 @@ function App() {
     const [inputTarget, setInputTarget] = useState("");
     const [inputStartNode, setInputStartNode] = useState("0");
     const [uiEdges, setUiEdges] = useState([]);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [uiStep, setUiStep] = useState(-1);
+    const [stepsData, setStepsData] = useState([]);
 
     const nodesRef = useRef([]);
     const edgesRef = useRef([]);
@@ -64,6 +67,9 @@ function App() {
         // Reset steps
         stepsRef.current = [];
         stepIndexRef.current = -1;
+        setIsPlaying(false);
+        setUiStep(-1);
+        setStepsData([]);
         setStatus("Graph updated");
     };
 
@@ -109,6 +115,8 @@ function App() {
 
             stepsRef.current = data.steps;
             stepIndexRef.current = 0;
+            setUiStep(0);
+            setStepsData(data.steps);
             setStatus("BFS Animated");
 
         } catch (err) {
@@ -116,6 +124,23 @@ function App() {
             setStatus("Connection error");
         }
     };
+
+    // Handle Auto-Play
+    useEffect(() => {
+        let interval;
+        if (isPlaying) {
+            // Updates once per second
+            interval = setInterval(() => {
+                if (stepIndexRef.current < stepsRef.current.length - 1) {
+                    stepIndexRef.current += 1;
+                    setUiStep(stepIndexRef.current);
+                }
+                else
+                    setIsPlaying(false);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying]);
 
     useEffect(() => {
         // Display initial graph
@@ -177,14 +202,20 @@ function App() {
     }, []);
 
     const nextStep = () => {
-        if (stepIndexRef.current < stepsRef.current.length - 1)
+        if (stepIndexRef.current < stepsRef.current.length - 1) {
             stepIndexRef.current += 1;
+            setUiStep(stepIndexRef.current);
+        }
     }
 
     const prevStep = () => {
-        if (stepIndexRef.current > 0)
+        if (stepIndexRef.current > 0) {
             stepIndexRef.current -= 1;
+            setUiStep(stepIndexRef.current);
+        }
     }
+
+    const currentStepInfo = uiStep >= 0 ? stepsData[uiStep] : null;
 
     const getMousePos = (e) => {
         const canvas = canvasRef.current;
@@ -263,6 +294,12 @@ function App() {
                 </div>
 
                 <div className="step-controls">
+                    <button
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className="btn btn-play"
+                        disabled={uiStep < 0 || uiStep >= stepsData.length - 1}>
+                            {isPlaying ? "Pause" : "Play"}
+                        </button>
                     <button onClick={prevStep} className="btn btn-step">Previous</button>
                     <button onClick={nextStep} className="btn btn-step">Next</button>
                 </div>

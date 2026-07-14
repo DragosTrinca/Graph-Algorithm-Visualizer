@@ -91,6 +91,8 @@
 .btn-step {
   background-color: #e0e0e0;
   color: #333;
+  width: 100%;
+  margin-top: 10px;
 }
 .btn-step:hover { background-color: #d0d0d0; }
 
@@ -119,3 +121,12 @@
   margin-bottom: 20px;
 }
 .btn-update:hover { background-color: #9b59b6; }
+
+.btn-play {
+  background-color: #f1c40f;
+  color: #333;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 10px;
+}
+.btn-play:hover { background-color: #f39c12; color: #fff; }
