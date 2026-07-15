@@ -1,3 +1,8 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .app-container {
   display: flex;
   margin-top: 20px;
@@ -130,3 +135,48 @@
   margin-top: 10px;
 }
 .btn-play:hover { background-color: #f39c12; color: #fff; }
+
+.bottom-panel {
+  margin: 0 20px 20px 20px;
+  max-width: 1120px;
+}
+
+.queue-panel {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ecf0f1;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+}
+
+.queue-boxes {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+  min-height: 50px;
+}
+
+.queue-box {
+  min-width: 40px;
+  height: 40px;
+  background-color: #3498db;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: popIn 0.3s ease-out;
+}
+
+.queue-box.first-item {
+  background-color: #2ecc71;
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.4);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
