@@ -14,6 +14,7 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [uiStep, setUiStep] = useState(-1);
     const [stepsData, setStepsData] = useState([]);
+    const [speedMs, setSpeedMs] = useState(1000);
 
     const nodesRef = useRef([]);
     const edgesRef = useRef([]);
@@ -137,10 +138,10 @@ function App() {
                 }
                 else
                     setIsPlaying(false);
-            }, 1000);
+            }, speedMs);
         }
         return () => clearInterval(interval);
-    }, [isPlaying]);
+    }, [isPlaying, speedMs]);
 
     useEffect(() => {
         // Display initial graph
@@ -295,12 +296,29 @@ function App() {
                 </div>
 
                 <div className="step-controls">
+                    <div className="speed-control">
+                        <div className="speed-label">
+                            <span>Speed:</span>
+                            <span>{speedMs} ms</span>
+                        </div>
+                        <input
+                            type="range"
+                            min="100"
+                            max="2000"
+                            step="100"
+                            value={speedMs}
+                            onChange={(e) => setSpeedMs(Number(e.target.value))}
+                            className="slider"
+                        />
+                    </div>
+
                     <button
                         onClick={() => setIsPlaying(!isPlaying)}
                         className="btn btn-play"
                         disabled={uiStep < 0 || uiStep >= stepsData.length - 1}>
                             {isPlaying ? "Pause" : "Play"}
                         </button>
+                    <br></br>
                     <button onClick={prevStep} className="btn btn-step">Previous</button>
                     <button onClick={nextStep} className="btn btn-step">Next</button>
                 </div>
