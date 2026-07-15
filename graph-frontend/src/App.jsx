@@ -184,7 +184,7 @@ function App() {
                     const nodeIdInt = parseInt(node.id);
 
                     if (currentStepData.currentNode === nodeIdInt) {
-                        color = '#f93333';
+                        color = '#22cc77';
                     } else if (currentStepData.visitedNodes.includes(nodeIdInt)) {
                         color = '#f99933';
                     }
@@ -259,6 +259,7 @@ function App() {
     };
 
     return (
+    <div className="page-wrapper">
         <div className="app-container">
             <div className = "sidebar">
                 <h3>Graph Editor</h3>
@@ -307,7 +308,6 @@ function App() {
                 <p className="status-text">Status: {status}</p>
             </div>
 
-
             <div className="canvas-container">
                 <canvas
                     ref={canvasRef}
@@ -319,6 +319,30 @@ function App() {
                 />
             </div>
         </div>
+
+        <div className="bottom-panel">
+            <div className="queue-panel">
+                <h4 style={{ marginTop: 0, marginBottom: '10px', color: '#223355' }}>Queue</h4>
+                <div className="queue-boxes">
+                    {currentStepInfo && currentStepInfo.dataStructure && currentStepInfo.dataStructure.length > 0 ? (
+                        currentStepInfo.dataStructure.map((qNode, idx) => (
+                            <div
+                                key={`${uiStep}-${idx}`} className='queue-box'
+                                className={`queue-box ${idx === 0 ? 'first-item' : ''}`}
+                            >
+                                {qNode}
+                            </div>
+                        ))
+                    ) : (
+                        <span style={{ color: '#778888', fontSize: '14px'}}>
+                            {uiStep >= 0 ? "Empty" : "Waiting for algorithm"}
+                        </span>
+                    )}
+                </div>
+            </div>
+        </div>
+    </div>
+        
         
     );
 }
