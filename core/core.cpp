@@ -35,7 +35,6 @@ json runBFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
 
     while (!q.empty()) {
         int node = q.front();
-        q.pop();
 
         currentVisitedList.push_back(node);
 
@@ -43,6 +42,14 @@ json runBFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
         Step currentStep;
         currentStep.currentNode = node;
         currentStep.visitedNodes = currentVisitedList;
+
+        // Add neighbors to queue
+        if (adjList.find(node) != adjList.end())
+            for (int neighbor : adjList.at(node))
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.push(neighbor);
+                }
 
         std::queue<int> tempQ = q;
         while (!tempQ.empty()) {
@@ -52,13 +59,7 @@ json runBFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
 
         stepsHistory.push_back(currentStep);
 
-        // Add neighbors to queue
-        if (adjList.find(node) != adjList.end())
-            for (int neighbor : adjList.at(node))
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    q.push(neighbor);
-                }
+        q.pop();
     }
 
     return json{
