@@ -1,5 +1,7 @@
 #include <iostream>
 #include <queue>
+#include <stack>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -69,23 +71,75 @@ json runBFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
     };
 }
 
+json runDFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
+    std::vector<Step> stepsHistory;
+    std::stack<int> s;
+    std::unordered_map<int, bool> visited;
+
+    s.push(startNode);
+
+    std::vector<int> currentVisitedList;
+
+    while (!s.empty()) {
+        int node = s.top();
+        s.pop();
+
+        if (visited[node]) continue;
+
+        visited[node] = true;
+        currentVisitedList.push_back(node);
+
+        // Create an image of the current status
+        Step currentStep;
+        currentStep.currentNode = node;
+        currentStep.visitedNodes = currentVisitedList;
+
+        // Add neighbors to stack
+        if (adjList.find(node) != adjList.end()) {
+            auto neighbors = adjList.at(node);
+            // Reverse neighbors to traverse from smallest to biggest
+            reverse(neighbors.begin(), neighbors.end());
+
+            for (int neighbor : neighbors)
+                if (!visited[neighbor]) {
+                    s.push(neighbor);
+                }
+        }
+
+        std::stack<int> tempS = s;
+        while (!tempS.empty()) {
+            currentStep.dataStructure.push_back(tempS.top());
+            tempS.pop();
+        }
+
+        stepsHistory.push_back(currentStep);
+    }
+
+    return json{
+        {"algorithm", "DFS"},
+        {"startNode", startNode},
+        {"steps", stepsHistory}
+    };
+}
+
 int main() {
     httplib::Server svr;
 
-    svr.Options("/api/bfs", [](const httplib::Request&, httplib::Response& res) {
+    svr.Options("/api/algorithm", [](const httplib::Request&, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         res.status = 200;
         });
 
-    svr.Post("/api/bfs", [](const httplib::Request& req, httplib::Response& res) {
+    svr.Post("/api/algorithm", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
 
         try {
             json requestJson = json::parse(req.body);
 
             int startNode = requestJson["startNode"];
+            std::string algorithm = requestJson["algorithm"];
             std::unordered_map<int, std::vector<int>> adjList;
 
             if (requestJson.contains("adjacencyList")) {
@@ -94,8 +148,13 @@ int main() {
                     adjList[node] = neighborsJson.get<std::vector<int>>();
                 }
             }
-
-            json responseJson = runBFS(startNode, adjList);
+            json responseJson;
+            if (algorithm == "BFS") {
+                responseJson = runBFS(startNode, adjList);
+            }
+            else {
+                responseJson = runDFS(startNode, adjList);
+            }
             res.set_content(responseJson.dump(), "application/json");
         }
         catch (const std::exception& e) {

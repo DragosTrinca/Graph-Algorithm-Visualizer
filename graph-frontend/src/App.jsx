@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { Renderer } from './Renderer';
 import { PhysicsEngine} from './PhysicsEngine';
 import './App.css';
+import { FaPlay, FaPause, FaStepBackward, FaStepForward, FaPaperPlane} from 'react-icons/fa';
 
 function App() {
     const canvasRef = useRef(null);
@@ -15,6 +16,7 @@ function App() {
     const [uiStep, setUiStep] = useState(-1);
     const [stepsData, setStepsData] = useState([]);
     const [speedMs, setSpeedMs] = useState(1000);
+    const [algorithm, setAlgorithm] = useState("BFS");
 
     const nodesRef = useRef([]);
     const edgesRef = useRef([]);
@@ -74,7 +76,7 @@ function App() {
         setStatus("Graph updated");
     };
 
-    const fetchBFS = async () => {
+    const fetchAlgorithm = async () => {
         if (nodesRef.current.length === 0) {
             alert("Please add at least 1 node");
             return;
@@ -98,13 +100,13 @@ function App() {
 
         // Convert edges into an adjacency list
         const payload = {
-            algorithm: "BFS",
+            algorithm: algorithm,
             startNode: parseInt(inputStartNode),
             adjacencyList: adjList
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/bfs", {
+            const response = await fetch("http://localhost:8080/api/algorithm", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -118,7 +120,7 @@ function App() {
             stepIndexRef.current = 0;
             setUiStep(0);
             setStepsData(data.steps);
-            setStatus("BFS Animated");
+            setStatus(algorithm + "Animated");
 
         } catch (err) {
             console.error(err);
@@ -262,7 +264,7 @@ function App() {
     return (
     <div className="page-wrapper">
         <div className="app-container">
-            <div className = "sidebar">
+            <div className="sidebar">
                 <h3>Graph Editor</h3>
 
                 <div className="input-group">
@@ -280,50 +282,70 @@ function App() {
 
                 <hr className="separator"/>
 
-                <h3>BFS Controls</h3>
-                <div className="bfs-controls">
-                    <div className="input-group">
-                        <label>Start Node:</label>
-                        <input
-                            type="text"
+                <h3>Algorithm</h3>
+                <div className="algo-controls">
+                    
+                    <div className="input-group-horizontal">
+                        <select
+                            value={algorithm}
+                            onChange={(e) => setAlgorithm(e.target.value)}
                             className="input-field"
-                            value={inputStartNode}
-                            onChange={e => setInputStartNode(e.target.value)}
-                            placeholder="Ex. 0"
-                        />
+                            style={{ width: '70px', padding: '5px' }}
+                        >
+                            <option value="BFS">BFS</option>
+                            <option value="DFS">DFS</option>
+                        </select>
                     </div>
-                    <button onClick={fetchBFS} className="btn btn-submit">Submit</button>
-                </div>
-
-                <div className="step-controls">
-                    <div className="speed-control">
-                        <div className="speed-label">
-                            <span>Speed:</span>
-                            <span>{speedMs} ms</span>
+                    <div className="algo-row row-1">
+                        <div className="input-group-horizontal">
+                            <label>Start Node:</label>
+                            <input
+                                type="text"
+                                className="input-field"
+                                value={inputStartNode}
+                                onChange={e => setInputStartNode(e.target.value)}
+                                placeholder="Ex. 0"
+                            />
                         </div>
-                        <input
-                            type="range"
-                            min="100"
-                            max="2000"
-                            step="100"
-                            value={speedMs}
-                            onChange={(e) => setSpeedMs(Number(e.target.value))}
-                            className="slider"
-                        />
+                        <button onClick={fetchAlgorithm} className="btn btn-submit" title="Submit">
+                            <FaPaperPlane/>
+                        </button>
+                    </div>
+                    
+
+                    <div className="algo-row row-2">
+                        <div className="speed-control-horizontal">
+                            <div className="speed-label">
+                                <span>Speed: {speedMs} ms</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="100"
+                                max="2000"
+                                step="100"
+                                value={speedMs}
+                                onChange={(e) => setSpeedMs(Number(e.target.value))}
+                                className="slider"
+                            />
+                        </div> 
+                        <button
+                            onClick={() => setIsPlaying(!isPlaying)}
+                            className="btn btn-play"
+                            disabled={uiStep < 0 || uiStep >= stepsData.length - 1}
+                        >
+                            {isPlaying ? <FaPause/> : <FaPlay/>}
+                        </button>
                     </div>
 
-                    <button
-                        onClick={() => setIsPlaying(!isPlaying)}
-                        className="btn btn-play"
-                        disabled={uiStep < 0 || uiStep >= stepsData.length - 1}>
-                            {isPlaying ? "Pause" : "Play"}
+                    <div className="algo-row row-3">
+                        <button onClick={prevStep} className="btn btn-step" disabled={isPlaying} title="Previous step">
+                            <FaStepBackward/>
                         </button>
-                    <br></br>
-                    <button onClick={prevStep} className="btn btn-step">Previous</button>
-                    <button onClick={nextStep} className="btn btn-step">Next</button>
+                        <button onClick={nextStep} className="btn btn-step" disabled={isPlaying} title="Next step">
+                            <FaStepForward/>
+                        </button>
+                    </div>
                 </div>
-
-                <p className="status-text">Status: {status}</p>
             </div>
 
             <div className="canvas-container">
@@ -339,14 +361,16 @@ function App() {
         </div>
 
         <div className="bottom-panel">
-            <div className="queue-panel">
-                <h4 style={{ marginTop: 0, marginBottom: '10px', color: '#223355' }}>Queue</h4>
-                <div className="queue-boxes">
+            <div className="structure-panel">
+                <h4 style={{ marginTop: 0, marginBottom: '10px', color: '#223355' }}>
+                    Data Structure ({algorithm === "BFS" ? "Queue" : "Stack"})
+                </h4>
+                <div className="structure-boxes">
                     {currentStepInfo && currentStepInfo.dataStructure && currentStepInfo.dataStructure.length > 0 ? (
                         currentStepInfo.dataStructure.map((qNode, idx) => (
                             <div
-                                key={`${uiStep}-${idx}`} className='queue-box'
-                                className={`queue-box ${idx === 0 ? 'first-item' : ''}`}
+                                key={`${uiStep}-${idx}`} className='structure-box'
+                                className={`structure-box ${idx === 0 ? 'first-item' : ''}`}
                             >
                                 {qNode}
                             </div>
