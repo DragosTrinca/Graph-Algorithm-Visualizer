@@ -4,6 +4,7 @@ import { PhysicsEngine} from './PhysicsEngine';
 import './App.css';
 import { GraphEditor } from './components/GraphEditor';
 import { AlgorithmControls } from './components/AlgorithmControl';
+import { DataStructurePanel } from './components/DataStructurePanel';
 
 function App() {
     const canvasRef = useRef(null);
@@ -298,32 +299,12 @@ function App() {
             </div>
         </div>
 
-        <div className="bottom-panel">
-            <div className="structure-panel">
-                <h4 style={{ marginTop: 0, marginBottom: '10px', color: '#223355' }}>
-                    Data Structure ({algorithm === "BFS" ? "Queue" : "Stack"})
-                </h4>
-                <div className="structure-boxes">
-                    {currentStepInfo && currentStepInfo.dataStructure && currentStepInfo.dataStructure.length > 0 ? (
-                        currentStepInfo.dataStructure.map((qNode, idx) => (
-                            <div
-                                key={`${uiStep}-${idx}`} className='structure-box'
-                                className={`structure-box ${idx === 0 ? 'first-item' : ''}`}
-                            >
-                                {qNode}
-                            </div>
-                        ))
-                    ) : (
-                        <span style={{ color: '#778888', fontSize: '14px'}}>
-                            {uiStep >= 0 ? "Empty" : "Waiting for algorithm"}
-                        </span>
-                    )}
-                </div>
-            </div>
-        </div>
+        <DataStructurePanel
+            algorithm={algorithm}
+            currentStepInfo={currentStepInfo}
+            uiStep={uiStep}
+        />
     </div>
-        
-        
     );
 }
 
