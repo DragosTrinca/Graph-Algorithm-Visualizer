@@ -5,7 +5,7 @@ import './App.css';
 import { GraphEditor } from './components/GraphEditor';
 import { AlgorithmControls } from './components/AlgorithmControl';
 import { DataStructurePanel } from './components/DataStructurePanel';
-
+import { GraphCanvas } from './components/GraphCanvas';
 function App() {
     const canvasRef = useRef(null);
 
@@ -287,16 +287,14 @@ function App() {
                 />
             </div>
 
-            <div className="canvas-container">
-                <canvas
-                    ref={canvasRef}
-                    className="graph-canvas"
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={handleMouseUp}
-                    onMouseMove={handleMouseMove}
-                    onMouseLeave={handleMouseUp}
-                />
-            </div>
+            <GraphCanvas
+                canvasRef={canvasRef}
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                handleMouseMove={handleMouseMove}
+                handleMouseLeave={handleMouseUp}
+                draggedNodeRef={draggedNodeRef}
+            />
         </div>
 
         <DataStructurePanel
