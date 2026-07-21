@@ -3,6 +3,7 @@ import { Renderer } from './Renderer';
 import { PhysicsEngine} from './PhysicsEngine';
 import './App.css';
 import { FaPlay, FaPause, FaStepBackward, FaStepForward, FaPaperPlane} from 'react-icons/fa';
+import { GraphEditor } from './components/GraphEditor';
 
 function App() {
     const canvasRef = useRef(null);
@@ -265,20 +266,11 @@ function App() {
     <div className="page-wrapper">
         <div className="app-container">
             <div className="sidebar">
-                <h3>Graph Editor</h3>
-
-                <div className="input-group">
-                    <label>Edges (one per row):</label>
-                    <textarea
-                        className="input-field textarea-field"
-                        value={graphText}
-                        onChange={e => setGraphText(e.target.value)}
-                        spellCheck="false"
-                    />
-                </div>
-                <button onClick={handleApplyGraph} className="btn btn-update" style={{marginTop: '10px'}}>
-                    Display Graph
-                </button>
+                <GraphEditor
+                    graphText={graphText}
+                    setGraphText={setGraphText}
+                    onApplyGraph={handleApplyGraph}
+                />
 
                 <hr className="separator"/>
 
