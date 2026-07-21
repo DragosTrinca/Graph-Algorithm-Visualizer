@@ -1,11 +1,12 @@
 import { useRef, useEffect, useState } from 'react';
-import { Renderer } from './Renderer';
-import { PhysicsEngine} from './PhysicsEngine';
+import { Renderer } from './utils/Renderer';
+import { PhysicsEngine} from './utils/PhysicsEngine';
 import './App.css';
 import { GraphEditor } from './components/GraphEditor';
 import { AlgorithmControls } from './components/AlgorithmControl';
 import { DataStructurePanel } from './components/DataStructurePanel';
 import { GraphCanvas } from './components/GraphCanvas';
+
 function App() {
     const canvasRef = useRef(null);
 
