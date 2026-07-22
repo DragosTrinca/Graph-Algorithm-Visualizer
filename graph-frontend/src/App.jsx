@@ -1,15 +1,19 @@
 import { useRef, useEffect, useState } from 'react';
-import { Renderer } from './utils/Renderer';
-import { PhysicsEngine} from './utils/PhysicsEngine';
 import './App.css';
+
+// Import helper functions
+import { parseGraphText } from './utils/GraphParser';
+import { useGraphAnimation } from './utils/GraphAnimation';
+
+// Import UI components
 import { GraphEditor } from './components/GraphEditor';
 import { AlgorithmControls } from './components/AlgorithmControl';
 import { DataStructurePanel } from './components/DataStructurePanel';
 import { GraphCanvas } from './components/GraphCanvas';
 
-function App() {
-    const canvasRef = useRef(null);
 
+function App() {
+    // Initial settings
     const [status, setStatus] = useState("Waiting...");
     const [inputSource, setInputSource] = useState("");
     const [inputTarget, setInputTarget] = useState("");
@@ -20,48 +24,22 @@ function App() {
     const [stepsData, setStepsData] = useState([]);
     const [speedMs, setSpeedMs] = useState(1000);
     const [algorithm, setAlgorithm] = useState("BFS");
+    const [graphText, setGraphText] = useState("0 1\n1 2\n0 2\n1 3\n1 4\n2 4");
 
+    // Initialize references
+    const canvasRef = useRef(null);
     const nodesRef = useRef([]);
     const edgesRef = useRef([]);
     const stepsRef = useRef([]);
     const stepIndexRef = useRef(-1);
     const draggedNodeRef = useRef(null);
 
-    const [graphText, setGraphText] = useState("0 1\n1 2\n0 2\n1 3\n1 4\n2 4");
+    // Activate graphic engine
+    useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef);
 
     // Transform text into graph
     const handleApplyGraph = () => {
-        const lines = graphText.split('\n');
-        const newEdges = [];
-        const newNodesSet = new Set();
-
-        // Parse text line by line
-        lines.forEach(line => {
-            const parts = line.trim().split(/[\s,-]+/);
-            if (parts.length >= 2 && parts[0] !== "" && parts[1] !=="") {
-                const source = parts[0];
-                const target = parts[1];
-                newEdges.push({ source, target });
-                newNodesSet.add(source);
-                newNodesSet.add(target);
-            }
-        });
-
-        // Build new nodes, keep old nodes on the same position
-        const currentNodes = nodesRef.current;
-        const updatedNodes = [];
-
-        newNodesSet.forEach(nodeId => {
-            const existingNode = currentNodes.find(n => n.id === nodeId);
-            if (existingNode) updatedNodes.push(existingNode);
-            else updatedNodes.push({
-                id: nodeId,
-                x: Math.random() * 800,
-                y: Math.random() * 600,
-                vx: 0,
-                vy: 0
-            });
-        });
+        const { updatedNodes, newEdges} = parseGraphText(graphText, nodesRef.current);
 
         // Update arrays
         nodesRef.current.length = 0;
@@ -78,6 +56,10 @@ function App() {
         setStepsData([]);
         setStatus("Graph updated");
     };
+
+    useEffect(() => {
+        handleApplyGraph();
+    }, []);
 
     const fetchAlgorithm = async () => {
         if (nodesRef.current.length === 0) {
@@ -135,7 +117,6 @@ function App() {
     useEffect(() => {
         let interval;
         if (isPlaying) {
-            // Updates once per second
             interval = setInterval(() => {
                 if (stepIndexRef.current < stepsRef.current.length - 1) {
                     stepIndexRef.current += 1;
@@ -147,65 +128,6 @@ function App() {
         }
         return () => clearInterval(interval);
     }, [isPlaying, speedMs]);
-
-    useEffect(() => {
-        // Display initial graph
-        handleApplyGraph();
-
-        const canvas = canvasRef.current;
-
-        canvas.width = 800;
-        canvas.height = 600;
-
-        const renderer = new Renderer(canvas);
-		const physics = new PhysicsEngine(nodesRef.current, edgesRef.current, canvas.width, canvas.height);
-
-		let animationFrameId;
-
-		const animate = () => {
-			// Calculate new positions
-			physics.update();
-
-			// Clear the previous screen
-			renderer.clearScreen();
-
-			// Draw edges
-			edgesRef.current.forEach(edge => {
-				const n1 = nodesRef.current.find(n => n.id === edge.source);
-				const n2 = nodesRef.current.find(n => n.id === edge.target);
-				if (n1 && n2)
-					renderer.drawLine(n1.x, n1.y, n2.x, n2.y);
-			});
-
-            // Extract current status
-            const currentStepsArray = stepsRef.current;
-            const currentIndex = stepIndexRef.current;
-            const currentStepData = currentIndex >= 0 ? currentStepsArray[currentIndex] : null; 
-
-			// Draw nodes
-			nodesRef.current.forEach(node => {
-                let color = '#3333f9';
-
-                if (currentStepData) {
-                    const nodeIdInt = parseInt(node.id);
-
-                    if (currentStepData.currentNode === nodeIdInt) {
-                        color = '#22cc77';
-                    } else if (currentStepData.visitedNodes.includes(nodeIdInt)) {
-                        color = '#f99933';
-                    }
-                }
-
-				renderer.drawNode(node.x, node.y, color, node.id);
-			});
-
-			animationFrameId = requestAnimationFrame(animate);
-		};
-
-		animate();
-
-		return () => cancelAnimationFrame(animationFrameId);
-    }, []);
 
     const nextStep = () => {
         if (stepIndexRef.current < stepsRef.current.length - 1) {
