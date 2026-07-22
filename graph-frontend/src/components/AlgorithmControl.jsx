@@ -59,7 +59,7 @@ export function AlgorithmControls({
                 <button
                     onClick={() => setIsPlaying(!isPlaying)}
                     className="btn btn-play"
-                    disabled={uiStep < 0 || uiStep >= stepsData.length - 1}
+                    disabled={uiStep < 0 || uiStep >= stepsDataLength - 1}
                 >
                     {isPlaying ? <FaPause /> : <FaPlay />}
                 </button>
