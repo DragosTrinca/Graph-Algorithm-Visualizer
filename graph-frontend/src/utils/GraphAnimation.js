@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { PhysicsEngine } from "./PhysicsEngine";
 import { Renderer } from "./Renderer";
 
-export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef) {
+export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected) {
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -27,7 +27,7 @@ export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepI
                 const n1 = nodesRef.current.find(n => n.id === edge.source);
                 const n2 = nodesRef.current.find(n => n.id === edge.target);
                 if (n1 && n2)
-                    renderer.drawLine(n1.x, n1.y, n2.x, n2.y);
+                    renderer.drawLine(n1.x, n1.y, n2.x, n2.y, isDirected);
             });
 
             // Extract current status
@@ -58,5 +58,5 @@ export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepI
         animate();
 
         return () => cancelAnimationFrame(animationFrameId);
-    }, [canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef]);
+    }, [canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected]);
 }

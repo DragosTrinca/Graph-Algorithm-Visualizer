@@ -8,13 +8,32 @@ export class Renderer {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    drawLine(x1, y1, x2, y2) {
+    drawLine(x1, y1, x2, y2, isDirected = false) {
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
         this.ctx.lineTo(x2, y2);
         this.ctx.strokeStyle = '#999';
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
+
+        // Draw arrow head for directed graphs
+        if (isDirected) {
+            const radius = 20;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+
+            const targetX = x2 - radius * Math.cos(angle);
+            const targetY = y2 - radius * Math.sin(angle);
+
+            const headlen = 12;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(targetX, targetY);
+            this.ctx.lineTo(targetX - headlen * Math.cos(angle - Math.PI / 6), targetY - headlen * Math.sin(angle - Math.PI / 6));
+            this.ctx.lineTo(targetX - headlen * Math.cos(angle + Math.PI / 6), targetY - headlen * Math.sin(angle + Math.PI / 6));
+            this.ctx.lineTo(targetX, targetY);
+            this.ctx.fillStyle = '#999';
+            this.ctx.fill();
+        }
     }
 
     drawNode(x, y, color, id) {
