@@ -141,11 +141,18 @@ int main() {
             int startNode = requestJson["startNode"];
             std::string algorithm = requestJson["algorithm"];
             std::unordered_map<int, std::vector<int>> adjList;
+            std::unordered_map<int, std::vector<std::pair<int, int>>> weightedAdjList;
 
             if (requestJson.contains("adjacencyList")) {
                 for (auto& [keyStr, neighborsJson] : requestJson["adjacencyList"].items()) {
                     int node = std::stoi(keyStr);
-                    adjList[node] = neighborsJson.get<std::vector<int>>();
+                    for (auto& neighbor : neighborsJson) {
+                        int to = neighbor["to"];
+                        int weight = neighbor["weight"];
+
+                        adjList[node].push_back(to);
+                        weightedAdjList[node].push_back({ to, weight });
+                    }
                 }
             }
             json responseJson;

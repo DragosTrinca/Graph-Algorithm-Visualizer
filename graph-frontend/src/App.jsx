@@ -71,15 +71,20 @@ function App() {
 
         const adjList = {};
         edgesRef.current.forEach(edge => {
-            // Initialize arrays
-            if (!adjList[edge.source]) adjList[edge.source] = [];
-            if (!adjList[edge.target]) adjList[edge.target] = [];
+            const src = parseInt(edge.source);
+            const tgt = parseInt(edge.target);
+            const wt = edge.weight;
 
-            if (!adjList[edge.source].includes(parseInt(edge.target))) {
-                adjList[edge.source].push(parseInt(edge.target));
+            // Initialize arrays
+            if (!adjList[src]) adjList[src] = [];
+            if (!adjList[tgt]) adjList[tgt] = [];
+
+            if (!adjList[src].some(n => n.to === tgt)) {
+                adjList[src].push({ to: tgt, weight: wt });
             }
-            if (!isDirected && !adjList[edge.target].includes(parseInt(edge.source))) {
-                adjList[edge.target].push(parseInt(edge.source));
+            
+            if (!isDirected && !adjList[tgt].some(n => n.to === src)) {
+                adjList[tgt].push({ to: src, weight: wt });
             }
         });
 

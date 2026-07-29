@@ -26,8 +26,10 @@ export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepI
             edgesRef.current.forEach(edge => {
                 const n1 = nodesRef.current.find(n => n.id === edge.source);
                 const n2 = nodesRef.current.find(n => n.id === edge.target);
-                if (n1 && n2)
+                if (n1 && n2) {
                     renderer.drawLine(n1.x, n1.y, n2.x, n2.y, isDirected);
+                    renderer.drawWeight(n1.x, n1.y, n2.x, n2.y, edge.weight);
+                }
             });
 
             // Extract current status

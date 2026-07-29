@@ -9,7 +9,10 @@ export function parseGraphText(graphText, currentNodes) {
         if (parts.length >= 2 && parts[0] !== "" && parts[1] !== "") {
             const source = parts[0];
             const target = parts[1];
-            newEdges.push({ source, target });
+            // Default weight is 1
+            const weight = parts.length >= 3 ? parseInt(parts[2]) : 1;
+
+            newEdges.push({ source, target, weight });
             newNodesSet.add(source);
             newNodesSet.add(target);
         }

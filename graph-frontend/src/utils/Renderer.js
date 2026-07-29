@@ -36,6 +36,27 @@ export class Renderer {
         }
     }
 
+    drawWeight(x1, y1, x2, y2, weight) {
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+
+        // Fill background
+        this.ctx.beginPath();
+        this.ctx.arc(midX, midY, 12, 0, 2 * Math.PI);
+        this.ctx.fillStyle = '#fff';
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+
+        // Render weight
+        this.ctx.fillStyle = '#333';
+        this.ctx.font = '12px Arial';;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(weight, midX, midY);
+    }
+
     drawNode(x, y, color, id) {
         this.ctx.beginPath();
         this.ctx.arc(x, y, 20, 0, 2 * Math.PI);
