@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function GraphEditor({ graphText, setGraphText, onApplyGraph, isDirected, setIsDirected}) {
+export function GraphEditor({ graphText, setGraphText, onApplyGraph, isDirected, setIsDirected, showWeights, setShowWeights}) {
     return (
     <>
         <h3>Graph Editor</h3>
@@ -27,6 +27,18 @@ export function GraphEditor({ graphText, setGraphText, onApplyGraph, isDirected,
             </label>
         </div>
 
+        <div className="input-group-horizontal" style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <input 
+                type="checkbox" 
+                id="directed-toggle"
+                checked={showWeights}
+                onChange={(e) => setShowWeights(e.target.checked)}
+                style={{ cursor: 'pointer' }}
+            />
+            <label htmlFor="weights-toggle" style={{ cursor: 'pointer', fontSize: '14px', color: '#555' }}>
+                Show Weights
+            </label>
+        </div>
         <button onClick={onApplyGraph} className="btn btn-update" style={{ marginTop: '10px'}}>
             Display Graph
         </button>

@@ -26,6 +26,7 @@ function App() {
     const [algorithm, setAlgorithm] = useState("BFS");
     const [graphText, setGraphText] = useState("0 1\n1 2\n0 2\n1 3\n1 4\n2 4");
     const [isDirected, setIsDirected] = useState(false);
+    const [showWeights, setShowWeights] = useState(false);
     // Initialize references
     const canvasRef = useRef(null);
     const nodesRef = useRef([]);
@@ -35,7 +36,7 @@ function App() {
     const draggedNodeRef = useRef(null);
 
     // Activate graphic engine
-    useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected);
+    useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected, showWeights);
 
     // Transform text into graph
     const handleApplyGraph = () => {
@@ -82,7 +83,7 @@ function App() {
             if (!adjList[src].some(n => n.to === tgt)) {
                 adjList[src].push({ to: tgt, weight: wt });
             }
-            
+
             if (!isDirected && !adjList[tgt].some(n => n.to === src)) {
                 adjList[tgt].push({ to: src, weight: wt });
             }
@@ -201,6 +202,8 @@ function App() {
                     onApplyGraph={handleApplyGraph}
                     isDirected={isDirected}
                     setIsDirected={setIsDirected}
+                    showWeights={showWeights}
+                    setShowWeights={setShowWeights}
                 />
 
                 <hr className="separator"/>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { PhysicsEngine } from "./PhysicsEngine";
 import { Renderer } from "./Renderer";
 
-export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected) {
+export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected, showWeights) {
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -28,7 +28,8 @@ export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepI
                 const n2 = nodesRef.current.find(n => n.id === edge.target);
                 if (n1 && n2) {
                     renderer.drawLine(n1.x, n1.y, n2.x, n2.y, isDirected);
-                    renderer.drawWeight(n1.x, n1.y, n2.x, n2.y, edge.weight);
+                    if (showWeights)
+                        renderer.drawWeight(n1.x, n1.y, n2.x, n2.y, edge.weight);
                 }
             });
 
@@ -60,5 +61,5 @@ export function useGraphAnimation(canvasRef, nodesRef, edgesRef, stepsRef, stepI
         animate();
 
         return () => cancelAnimationFrame(animationFrameId);
-    }, [canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected]);
+    }, [canvasRef, nodesRef, edgesRef, stepsRef, stepIndexRef, isDirected, showWeights]);
 }

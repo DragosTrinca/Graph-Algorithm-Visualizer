@@ -67,7 +67,7 @@ export class Renderer {
         this.ctx.stroke();
 
         this.ctx.fillStyle = '#fff';
-        this.ctx.front = '16px Arial';
+        this.ctx.font = '16px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(id, x, y);
