@@ -22,6 +22,7 @@ export function AlgorithmControls({
                 >
                     <option value="BFS">BFS</option>
                     <option value="DFS">DFS</option>
+                    <option value="Dijkstra">Dijkstra</option>
                 </select>
             </div>
             <div className="algo-row row-1">

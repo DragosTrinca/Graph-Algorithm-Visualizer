@@ -122,6 +122,59 @@ json runDFS(int startNode, std::unordered_map<int, std::vector<int>> adjList) {
     };
 }
 
+json runDijkstra(int startNode, std::unordered_map<int, std::vector<std::pair<int, int>>> adjList) {
+    std::vector<Step> stepsHistory;
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+    std::unordered_map<int, int> distances;
+    std::unordered_map<int, bool> visited;
+    std::vector<int> currentVisitedList;
+
+    // Initial distances are infinite
+    for (auto const& [node, neighbors] : adjList) distances[node] = 1e9;
+    distances[startNode] = 0;
+
+    pq.push({ 0, startNode });
+
+    while (!pq.empty()) {
+        int node = pq.top().second;
+        pq.pop();
+
+        if (visited[node]) continue;
+
+        visited[node] = true;
+        currentVisitedList.push_back(node);
+
+        Step currentStep;
+        currentStep.currentNode = node;
+        currentStep.visitedNodes = currentVisitedList;
+
+        if (adjList.find(node) != adjList.end()) {
+            for (auto& edge : adjList.at(node)) {
+                int neighbor = edge.first;
+                int weight = edge.second;
+
+                if (!visited[neighbor] && distances[node] + weight < distances[neighbor]) {
+                    distances[neighbor] = distances[node] + weight;
+                    pq.push({ distances[neighbor], neighbor });
+                }
+            }
+        }
+
+        auto tempPQ = pq;
+        while (!tempPQ.empty()) {
+            currentStep.dataStructure.push_back(tempPQ.top().second);
+            tempPQ.pop();
+        }
+
+        stepsHistory.push_back(currentStep);
+    }
+
+    return json{
+        {"algorithm", "Dijkstra"},
+        {"startNode", startNode},
+        {"steps", stepsHistory}
+    };
+}
 int main() {
     httplib::Server svr;
 
@@ -159,8 +212,11 @@ int main() {
             if (algorithm == "BFS") {
                 responseJson = runBFS(startNode, adjList);
             }
-            else {
+            else if (algorithm == "DFS") {
                 responseJson = runDFS(startNode, adjList);
+            }
+            else {
+                responseJson = runDijkstra(startNode, weightedAdjList);
             }
             res.set_content(responseJson.dump(), "application/json");
         }

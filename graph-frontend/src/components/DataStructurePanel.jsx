@@ -5,7 +5,7 @@ export function DataStructurePanel({ algorithm, currentStepInfo, uiStep }) {
         <div className="bottom-panel">
             <div className="structure-panel">
                 <h4 style={{ marginTop: 0, marginBottom: '10px', color: '#223355' }}>
-                    Data Structure ({algorithm === "BFS" ? "Queue" : "Stack"})
+                    Data Structure ({algorithm === "BFS" ? "Queue" : (algorithm === "DFS" ? "Stack" : "Priority Queue")})
                 </h4>
                 <div className="structure-boxes">
                     {currentStepInfo && currentStepInfo.dataStructure && currentStepInfo.dataStructure.length > 0 ? (
