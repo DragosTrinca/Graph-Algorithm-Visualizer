@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Exclude external libraries from language statistics
+*httplib.h linguist-vendored
+*json.hpp linguist-vendored
