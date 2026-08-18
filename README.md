@@ -2,13 +2,15 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" alt="C++" />
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java" />
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
   <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript" />
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
 </div>
 
-> A full-stack interactive web application for visualizing graph traversal and pathfinding algorithms. The project features a C++ backend for high-performance algorithm execution and a React-based frontend for interactive, step-by-step graphical visualization.
+> A full-stack interactive web application for visualizing graph traversal and pathfinding algorithms. The project features dual backend options (a C++ backend for high-performance algorithm execution and a modern Java/Spring Boot alternative) and a React-based frontend for interactive, step-by-step graphical visualization.
 
 <img width="1210" height="783" alt="image" src="https://github.com/user-attachments/assets/e704702f-9cb3-45cc-b1e3-4089e1efde72" />
 
@@ -21,15 +23,25 @@
 * **Data Structure Panel**: Real-time view of the internal data structure (Queue for BFS, Stack for DFS, Priority Queue for Dijkstra).
 
 ## Prerequisites
-* **Backend**: C++ Compiler (C++17 recommended).
+* **C++ Backend**: C++ Compiler (C++17 recommended).
+* **Java Backend**: Java Development Kit (JDK 17 or higher) and Maven.
 * **Frontend**: Node.js and npm (for the React application).
 
 ## Step-by-Step Installation
 
-### 1. Backend Setup (C++)
+### 1. Backend Setup
+You can choose to run either the C++ or the Java backend. Both expose the exact same API and run on port 8080.
+
+#### Option A: C++ Backend
 1. Ensure you have a modern C++ compiler installed.
 2. Compile the backend server (core.cpp).
 3. Run the compiled executable. The backend will start listening on `http://0.0.0.0:8080`.
+
+#### Option B: Java Backend (Spring Boot)
+1. Open the Java backend project folder in your preferred IDE (e.g., IntelliJ IDEA).
+2. Allow Maven to download the required dependencies (Spring Web).
+3. Run the `BackendApplication.java` main class.
+4. The Tomcat server will start automatically on `http://localhost:8080`.
 
 ### 2. Frontend Setup (React)
 1. Navigate to the frontend directory.
