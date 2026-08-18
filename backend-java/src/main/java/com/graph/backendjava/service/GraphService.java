@@ -36,4 +36,39 @@ public class GraphService {
 
         return new GraphResponse("BFS", startNode, stepsHistory);
     }
+
+    public GraphResponse runDFS(int startNode, Map<Integer, List<Edge>> adjList) {
+        List<Step> stepsHistory = new ArrayList<>();
+        Deque<Integer> stack = new ArrayDeque<>();
+        Set<Integer> visited = new HashSet<>();
+        List<Integer> currentVisitedList = new ArrayList<>();
+
+        stack.push(startNode);
+
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+
+            if (visited.contains(node)) continue;
+
+            visited.add(node);
+            currentVisitedList.add(node);
+
+            List<Edge> neighbors = new ArrayList<>(adjList.getOrDefault(node, Collections.emptyList()));
+
+            Collections.reverse(neighbors);
+
+            for (Edge edge : neighbors) {
+                int neighbor = edge.to();
+                if (!visited.contains(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+
+            List<Integer> stackSnapshot = new ArrayList<>(stack);
+
+            stepsHistory.add(new Step(node, new ArrayList<>(currentVisitedList), stackSnapshot));
+        }
+
+        return new GraphResponse("DFS", startNode, stepsHistory);
+    }
 }

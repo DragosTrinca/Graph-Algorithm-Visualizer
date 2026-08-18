@@ -22,8 +22,10 @@ public class GraphController {
         if ("BFS".equalsIgnoreCase(request.algorithm())) {
             return graphService.runBFS(request.startNode(), request.adjacencyList());
         }
-
-        // TO-DO DFS + Dijkstra
+        else if ("DFS".equalsIgnoreCase(request.algorithm())) {
+            return graphService.runDFS(request.startNode(), request.adjacencyList());
+        }
+        // TO-DO Dijkstra
         return null;
     }
 }
