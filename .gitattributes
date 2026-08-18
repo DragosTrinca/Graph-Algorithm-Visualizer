@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 # Exclude external libraries from language statistics
-core/nlohmann/** linguist-vendored
+backend-cpp/nlohmann/** linguist-vendored
 **/httplib.h linguist-vendored
