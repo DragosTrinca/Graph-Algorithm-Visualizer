@@ -25,7 +25,10 @@ public class GraphController {
         else if ("DFS".equalsIgnoreCase(request.algorithm())) {
             return graphService.runDFS(request.startNode(), request.adjacencyList());
         }
-        // TO-DO Dijkstra
-        return null;
+        else if ("Dijkstra".equalsIgnoreCase(request.algorithm())) {
+            return graphService.runDijkstra(request.startNode(), request.adjacencyList());
+        }
+
+        throw new IllegalArgumentException("Invalid request");
     }
 }
